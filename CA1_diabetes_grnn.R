@@ -48,7 +48,7 @@ print(best.sig <- cv[cv$sse==min(cv$sse), 1])
 
 # SCORE THE WHOLE DATASET WITH GRNN
 set.seed(101)
-model_grnn <- smooth(learn(train, variable.column=ncol(train)), sigma=best.sig)
+model_grnn <- smooth(learn(train, variable.column=ncol(train)), sigma=0.85)
 model_grnn.pred <- pred_grnn(test[, -ncol(test)], model_grnn)
 model_grnn.predClass <- roundUp(model_grnn.pred)
 caret::confusionMatrix(table(true=testClass, predicted=model_grnn.predClass))
