@@ -13,7 +13,7 @@ data_scaled <- data.frame(st.X, Y)
 
 require(caTools)
 set.seed(101)
-sample = sample.split(data_scaled, SplitRatio=.8)
+sample = sample.split(data_scaled, SplitRatio=.75)
 train = subset(data_scaled, sample==TRUE)
 test  = subset(data_scaled, sample==FALSE)
 testClass <- test[,ncol(test)]
