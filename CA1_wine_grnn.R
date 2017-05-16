@@ -22,14 +22,14 @@ testClass <- test[,ncol(test)]
 pred_grnn <- function(x, nn){
   xlst <- split(x, 1:nrow(x))
   pred <- foreach(i=xlst, .combine=rbind) %dopar% {
-    c(pred=guess(nn, as.matrix(i)))
+    c(pred=grnn::guess(nn, as.matrix(i)))
   }
 }
 
 # SEARCH FOR THE OPTIMAL VALUE OF SIGMA BY THE VALIDATION SAMPLE
 cv <- foreach(sig=seq(0.2, 1, 0.05), .combine=rbind) %dopar% {
   set.seed(101)
-  model_grnn <- smooth(learn(train, variable.column=ncol(train)), sigma=sig)
+  model_grnn <- grnn::smooth(grnn::learn(train, variable.column=ncol(train)), sigma=sig)
   model_grnn.pred <- pred_grnn(test[, -ncol(test)], model_grnn)
   test.sse <- sum((test[, ncol(test)] - model_grnn.pred)^2)
   data.frame(sig, sse=test.sse)

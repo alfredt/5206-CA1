@@ -2,7 +2,7 @@ pkgs <- c('caret', 'doParallel', 'foreach', 'grnn')
 lapply(pkgs, require, character.only=T)
 registerDoParallel(cores=8)
 
-data_all <- read.csv(file="winequality-white.csv", head=TRUE, sep=",")
+data_all <- read.csv(file="Diabetes.csv", head=FALSE, sep=",")
 
 # PRE-PROCESSING DATA
 column = ncol(data_all)
@@ -33,26 +33,28 @@ cv <- foreach(sig=seq(0.2, 1, 0.05), .combine=rbind) %dopar% {
 
 cat("\n### BEST SIGMA WITH THE LOWEST SSE ###\n")
 print(best.sig <- cv[cv$sse==min(cv$sse), 1])
-# [1] 0.55
-# 
+
+### BEST SIGMA WITH THE LOWEST SSE ###
+# [1] 0.85
+# > cv
 # sig      sse
-# 1  0.20 702.6699
-# 2  0.25 669.2830
-# 3  0.30 629.6584
-# 4  0.35 588.3660
-# 5  0.40 551.0654
-# 6  0.45 522.5315
-# 7  0.50 505.5045
-# 8  0.55 500.3770
-# 9  0.60 505.1758
-# 10 0.65 516.6524
-# 11 0.70 531.9342
-# 12 0.75 549.1961
-# 13 0.80 567.3808
-# 14 0.85 585.8494
-# 15 0.90 604.2120
-# 16 0.95 622.2074
-# 17 1.00 639.6127
+# 1  0.20 78.60869
+# 2  0.25 75.65809
+# 3  0.30 72.08739
+# 4  0.35 68.11625
+# 5  0.40 63.99199
+# 6  0.45 60.03216
+# 7  0.50 56.60772
+# 8  0.55 53.89958
+# 9  0.60 51.85717
+# 10 0.65 50.34688
+# 11 0.70 49.26007
+# 12 0.75 48.53193
+# 13 0.80 48.11732
+# 14 0.85 47.96788
+# 15 0.90 48.02806
+# 16 0.95 48.24310
+# 17 1.00 48.56685
 
 model_grnn <- grnn::smooth(grnn::learn(train_all, variable.column=column), sigma=best.sig)
 model_grnn.pred <- pred_grnn(test_all[, -column], model_grnn)
@@ -60,9 +62,6 @@ model_grnn.predClass <- round(model_grnn.pred)
 u_grnn <- union(test_all[,column], model_grnn.predClass)
 m <- caret::confusionMatrix(table(true=factor(test_all[,column], u_grnn), predictions=factor(model_grnn.predClass, u_grnn)))
 a <- m$overall[1]
-
-# Accuracy for sig:0.55
-# 0.6397059
-
-# Accuracy for sig:0.20 -> 0.4452614
-
+# 
+# Accuracy 
+# 0.703125 

@@ -1,4 +1,4 @@
-pkgs <- c('RSNNS', 'caret', 'doParallel', 'foreach', 'grnn', 'pnn')
+pkgs <- c('RSNNS', 'caret', 'doParallel', 'foreach')
 lapply(pkgs, require, character.only=T)
 registerDoParallel(cores=8)
 
