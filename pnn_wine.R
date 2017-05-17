@@ -2,19 +2,19 @@ pkgs <- c('caret', 'doParallel', 'foreach', 'pnn')
 lapply(pkgs, require, character.only=T)
 registerDoParallel(cores=8)
 
-data <- read.csv(file="winequality-white.csv", head=TRUE, sep=",")
+data_all <- read.csv(file="winequality-white.csv", head=TRUE, sep=",")
 
 # PRE-PROCESSING DATA
-data_scaled <- data.frame(scale(data[-ncol(data)]), data[ncol(data)])
+column = ncol(data_all)
+data_all <- data.frame(scale(data_all[-ncol(data_all)]), data_all[ncol(data_all)])
 
-# SPLIT DATA TRAIN/TEST
-require(caTools)
-set.seed(101)
-sample = sample.split(data_scaled, SplitRatio=.8)
-train = subset(data_scaled, sample==TRUE)
-test  = subset(data_scaled, sample==FALSE)
-testClass <- test[,ncol(test)]
+require("caTools")
+set.seed(101) 
+sample = sample.split(data_all, SplitRatio = .75)
+train_all = subset(data_all, sample == TRUE)
+test_all  = subset(data_all, sample == FALSE)
 
+# DEFINE A FUNCTION TO SCORE GRNN
 predict_pnn <- function(x, pnn){
   xlst <- split(x, 1:nrow(x))
   pred <- foreach(i=xlst, .combine=rbind) %dopar% {
