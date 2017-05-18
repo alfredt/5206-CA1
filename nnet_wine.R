@@ -26,7 +26,7 @@ test_nnet  = subset(data_nnet, sample == FALSE)
 # m <- caret::confusionMatrix(table(true=factor(test_nnet$quality, u_nnet), predictions=factor(model_nnet.predClass, u_nnet)))
 
 # SEARCH FOR THE OPTIMAL VALUE OF SIGMA BY THE VALIDATION SAMPLE
-cv <- foreach(node=seq(5, 15, 1), .combine=rbind) %dopar% {
+cv <- foreach(node=seq(2, 20, 1), .combine=rbind) %dopar% {
   set.seed(101)
   model_nnet <- nnet::nnet(train_nnet$quality ~ ., data=train_nnet, size=node, maxit=1000)
   model_nnet.predClass <- predict(model_nnet, test_nnet, type="class")
@@ -39,20 +39,29 @@ cv <- foreach(node=seq(5, 15, 1), .combine=rbind) %dopar% {
 cat("\n### BEST # OF HIDDEN NODES WITH THE HIGHEST ACCURACY ###\n")
 print(best.node <- cv[cv$accuracy==max(cv$accuracy), 1:2])
 
+### BEST # OF HIDDEN NODES WITH THE HIGHEST ACCURACY ###
 # node  accuracy
-# Accuracy     5 0.5596405
-# Accuracy4    9 0.5596405
-
+# Accuracy3    5 0.5596405
+# Accuracy6    8 0.5596405
+# > cv
 # node  accuracy
-# Accuracy      5 0.5596405
-# Accuracy1     6 0.5392157
-# Accuracy2     7 0.5367647
-# Accuracy3     8 0.5588235
-# Accuracy4     9 0.5596405
-# Accuracy5    10 0.5375817
-# Accuracy6    11 0.5310458
-# Accuracy7    12 0.5294118
-# Accuracy8    13 0.5441176
-# Accuracy9    14 0.5473856
-# Accuracy10   15 0.5531046
+# Accuracy      2 0.5187908
+# Accuracy1     3 0.5424837
+# Accuracy2     4 0.5359477
+# Accuracy3     5 0.5596405
+# Accuracy4     6 0.5424837
+# Accuracy5     7 0.5367647
+# Accuracy6     8 0.5596405
+# Accuracy7     9 0.5555556
+# Accuracy8    10 0.5351307
+# Accuracy9    11 0.5294118
+# Accuracy10   12 0.5310458
+# Accuracy11   13 0.5449346
+# Accuracy12   14 0.5457516
+# Accuracy13   15 0.5514706
+# Accuracy14   16 0.5359477
+# Accuracy15   17 0.5571895
+# Accuracy16   18 0.5228758
+# Accuracy17   19 0.5089869
+# Accuracy18   20 0.5359477
 

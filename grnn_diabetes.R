@@ -15,10 +15,10 @@ train_all = subset(data_all, sample == TRUE)
 test_all  = subset(data_all, sample == FALSE)
 
 # DEFINE A FUNCTION TO SCORE GRNN
-pred_grnn <- function(x, nn){
+predict_grnn <- function(x, nn){
   xlst <- split(x, 1:nrow(x))
   pred <- foreach(i=xlst, .combine=rbind) %dopar% {
-    c(pred=guess(nn, as.matrix(i)))
+    c(pred=grnn::guess(nn, as.matrix(i)))
   }
 }
 
@@ -56,12 +56,36 @@ print(best.sig <- cv[cv$sse==min(cv$sse), 1])
 # 16 0.95 48.24310
 # 17 1.00 48.56685
 
-model_grnn <- grnn::smooth(grnn::learn(train_all, variable.column=column), sigma=best.sig)
-model_grnn.pred <- pred_grnn(test_all[, -column], model_grnn)
-model_grnn.predClass <- round(model_grnn.pred)
-u_grnn <- union(test_all[,column], model_grnn.predClass)
-m <- caret::confusionMatrix(table(true=factor(test_all[,column], u_grnn), predictions=factor(model_grnn.predClass, u_grnn)))
-a <- m$overall[1]
+set.seed(101)
+model_grnn <- grnn::smooth(grnn::learn(train_all, variable.column=column), sigma=0.85)
+model_grnn.pred <- predict_grnn(test_all[, -column], model_grnn)
+model_grnn.predClass <- as.integer(round(model_grnn.pred))
+test_class <- as.integer(test_all$V9)
+u_grnn <- union(test_class, model_grnn.predClass)
+caret::confusionMatrix(table(true=factor(test_class, u_grnn), predictions=factor(model_grnn.predClass, u_grnn)))
+
+# Confusion Matrix and Statistics
 # 
-# Accuracy 
-# 0.703125 
+# predictions
+# true   1   0
+#     1  42  63
+#     0  13 138
+# 
+# Accuracy : 0.7031          
+# 95% CI : (0.6431, 0.7584)
+# No Information Rate : 0.7852          
+# P-Value [Acc > NIR] : 0.9992          
+# 
+# Kappa : 0.3385          
+# Mcnemar's Test P-Value : 1.902e-08       
+#                                           
+#             Sensitivity : 0.7636          
+#             Specificity : 0.6866          
+#          Pos Pred Value : 0.4000          
+#          Neg Pred Value : 0.9139          
+#              Prevalence : 0.2148          
+#          Detection Rate : 0.1641          
+#    Detection Prevalence : 0.4102          
+#       Balanced Accuracy : 0.7251          
+#                                           
+#        'Positive' Class : 1 
