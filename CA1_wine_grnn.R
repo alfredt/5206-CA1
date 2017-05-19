@@ -40,7 +40,7 @@ print(best.sig <- cv[cv$sse==min(cv$sse), 1])
 
 # SCORE THE WHOLE DATASET WITH GRNN
 set.seed(101)
-model_grnn <- smooth(learn(train, variable.column=ncol(train)), sigma=best.sig)
+model_grnn <- grnn::smooth(grnn::learn(train, variable.column=ncol(train)), sigma=0.55)
 model_grnn.pred <- pred_grnn(test[, -ncol(test)], model_grnn)
 model_grnn.predClass <- round(model_grnn.pred)
 u <- union(testClass, model_grnn.predClass)

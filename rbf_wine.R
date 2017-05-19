@@ -60,3 +60,44 @@ print(best.node <- cv[cv$accuracy==max(cv$accuracy), 1:2])
 # Accuracy16   18 0.5343137
 # Accuracy17   19 0.5285948
 # Accuracy18   20 0.5343137
+
+set.seed(101)
+model_mlp <- RSNNS::rbf(x=train_all[-column], y=train_target, size=20, maxit=1000)
+model_mlp.pred <- predict(model_mlp, test_all[-column])
+model_mlp.predClass <- predict_class(model_mlp.pred)
+u_mlp <- union(test_all$quality, model_mlp.predClass)
+caret::confusionMatrix(table(true=factor(test_all$quality, u_mlp), predictions=factor(model_mlp.predClass, u_mlp)))
+
+# Confusion Matrix and Statistics
+# 
+# predictions
+# true   6   5   8   4   7   3   9
+#     6 407 109   0   0  26   0   0
+#     5 144 199   0   0   2   0   0
+#     8  41   0   0   0  11   0   0
+#     4  13  34   0   0   0   0   0
+#     7 176   9   0   0  48   0   0
+#     3   1   3   0   0   0   0   0
+#     9   0   0   0   0   1   0   0
+# 
+# Overall Statistics
+# 
+# Accuracy : 0.5343          
+# 95% CI : (0.5059, 0.5626)
+# No Information Rate : 0.6389          
+# P-Value [Acc > NIR] : 1               
+# 
+# Kappa : 0.2512          
+# Mcnemar's Test P-Value : NA              
+# 
+# Statistics by Class:
+# 
+#                      Class: 6 Class: 5 Class: 8 Class: 4 Class: 7 Class: 3 Class: 9
+# Sensitivity            0.5205   0.5621       NA       NA  0.54545       NA       NA
+# Specificity            0.6946   0.8322  0.95752   0.9616  0.83715 0.996732 0.999183
+# Pos Pred Value         0.7509   0.5768       NA       NA  0.20601       NA       NA
+# Neg Pred Value         0.4501   0.8237       NA       NA  0.95964       NA       NA
+# Prevalence             0.6389   0.2892  0.00000   0.0000  0.07190 0.000000 0.000000
+# Detection Rate         0.3325   0.1626  0.00000   0.0000  0.03922 0.000000 0.000000
+# Detection Prevalence   0.4428   0.2819  0.04248   0.0384  0.19036 0.003268 0.000817
+# Balanced Accuracy      0.6075   0.6972       NA       NA  0.69130       NA       NA

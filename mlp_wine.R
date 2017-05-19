@@ -91,8 +91,42 @@ print(best.node2 <- cv2[cv2$accuracy==max(cv2$accuracy), 1:2])
 # Accuracy8   10 0.5751634
 
 set.seed(101)
-model_mlp <- RSNNS::mlp(x=train_all[-column], y=train_target, size=c(18,node), maxit=1000)
+model_mlp <- RSNNS::mlp(x=train_all[-column], y=train_target, size=c(19, 3), maxit=1000)
 model_mlp.pred <- predict(model_mlp, test_all[-column])
 model_mlp.predClass <- predict_class(model_mlp.pred)
 u_mlp <- union(test_all$quality, model_mlp.predClass)
-m <- caret::confusionMatrix(table(true=factor(test_all$quality, u_mlp), predictions=factor(model_mlp.predClass, u_mlp)))
+caret::confusionMatrix(table(true=factor(test_all$quality, u_mlp), predictions=factor(model_mlp.predClass, u_mlp)))
+
+# Confusion Matrix and Statistics
+# 
+# predictions
+# true   6   5   8   4   7   3   9
+#     6 350 129   0   4  59   0   0
+#     5  89 247   0   0   9   0   0
+#     8  23   1   0   0  28   0   0
+#     4  13  31   0   0   3   0   0
+#     7 119  17   0   0  97   0   0
+#     3   1   3   0   0   0   0   0
+#     9   0   0   0   0   1   0   0
+# 
+# Overall Statistics
+# 
+# Accuracy : 0.567          
+# 95% CI : (0.5387, 0.595)
+# No Information Rate : 0.4861         
+# P-Value [Acc > NIR] : 8.666e-09      
+# 
+# Kappa : 0.3393         
+# Mcnemar's Test P-Value : NA             
+# 
+# Statistics by Class:
+# 
+#                      Class: 6 Class: 5 Class: 8 Class: 4 Class: 7 Class: 3 Class: 9
+# Sensitivity            0.5882   0.5771       NA 0.000000  0.49239       NA       NA
+# Specificity            0.6948   0.8769  0.95752 0.961475  0.86758 0.996732 0.999183
+# Pos Pred Value         0.6458   0.7159       NA 0.000000  0.41631       NA       NA
+# Neg Pred Value         0.6408   0.7941       NA 0.996602  0.89909       NA       NA
+# Prevalence             0.4861   0.3497  0.00000 0.003268  0.16095 0.000000 0.000000
+# Detection Rate         0.2859   0.2018  0.00000 0.000000  0.07925 0.000000 0.000000
+# Detection Prevalence   0.4428   0.2819  0.04248 0.038399  0.19036 0.003268 0.000817
+# Balanced Accuracy      0.6415   0.7270       NA 0.480738  0.67998       NA       NA

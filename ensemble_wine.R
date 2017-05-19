@@ -57,10 +57,6 @@ predict_pnn <- function(x, pnn){
   }
 }
 
-predict_overall <- function(x){
-  return(ifelse((x/5)>=0.6, 1, 0))
-}
-
 # Training & Predictions of NNs models
 set.seed(101)
 model_nnet <- nnet::nnet(train_nnet$quality ~ ., data=train_nnet, size=nnet_nodes, maxit=1000)

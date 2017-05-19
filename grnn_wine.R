@@ -54,12 +54,15 @@ print(best.sig <- cv[cv$sse==min(cv$sse), 1])
 # 16 0.95 622.2074
 # 17 1.00 639.6127
 
-model_grnn <- grnn::smooth(grnn::learn(train_all, variable.column=column), sigma=best.sig)
+model_grnn <- grnn::smooth(grnn::learn(train_all, variable.column=column), sigma=0.55)
+model_grnn.pred <- pred_grnn(test_all[, -column], model_grnn)
+
+model_grnn <- grnn::smooth(grnn::learn(train_all, variable.column=column), sigma=0.55)
 model_grnn.pred <- pred_grnn(test_all[, -column], model_grnn)
 model_grnn.predClass <- round(model_grnn.pred)
 u_grnn <- union(test_all[,column], model_grnn.predClass)
-m <- caret::confusionMatrix(table(true=factor(test_all[,column], u_grnn), predictions=factor(model_grnn.predClass, u_grnn)))
-a <- m$overall[1]
+caret::confusionMatrix(table(true=factor(test_all[,column], u_grnn), predictions=factor(model_grnn.predClass, u_grnn)))
+
 
 # Accuracy for sig:0.55
 # 0.6397059
